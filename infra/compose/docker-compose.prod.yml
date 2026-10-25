@@ -1,0 +1,66 @@
+name: bookstall
+x-api: &api
+  image: ghcr.io/${GHCR_OWNER}/bookstall-api:${APP_VERSION}
+  env_file: .env
+  environment:
+    DATABASE_URL: postgres://bookstall:${PG_PASSWORD}@db:5432/bookstall
+  volumes: [app_storage:/data/storage]
+  restart: unless-stopped
+  logging: { driver: local, options: { max-size: "20m", max-file: "5" } }
+
+services:
+  caddy:
+    image: ghcr.io/${GHCR_OWNER}/bookstall-web:${APP_VERSION}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment: [DOMAIN=${DOMAIN}, ACME_EMAIL=${ACME_EMAIL}]
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+      - /opt/bookstall/public/app:/srv/app:ro
+      - /opt/bookstall/public/well-known:/srv/well-known:ro
+    depends_on: [api]
+    restart: unless-stopped
+
+  migrate:
+    <<: *api
+    command: ["node", "dist/db/migrate.js"]
+    restart: "no"
+    depends_on: { db: { condition: service_healthy } }
+
+  api:
+    <<: *api
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+
+  worker:
+    <<: *api
+    command: ["node", "dist/worker.js"]
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: bookstall
+      POSTGRES_USER: bookstall
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    command: >
+      postgres -c shared_buffers=1GB -c effective_cache_size=3GB
+               -c max_connections=50 -c work_mem=16MB
+    volumes: [pg_data:/var/lib/postgresql/data]
+    shm_size: 256mb
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U bookstall"], interval: 5s, retries: 10 }
+    restart: unless-stopped
+
+  backup:
+    image: ghcr.io/${GHCR_OWNER}/bookstall-backup:${APP_VERSION}
+    env_file: .env.backup
+    environment:
+      PGPASSWORD: ${PG_PASSWORD}
+    volumes: [app_storage:/data/storage:ro]
+    depends_on: { db: { condition: service_healthy } }
+    restart: unless-stopped
+
+volumes: { pg_data: {}, app_storage: {}, caddy_data: {}, caddy_config: {} }

@@ -1,0 +1,19 @@
+name: mobile
+on:
+  push: { tags: ['app-v*'] }
+  workflow_dispatch:
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @bookstall/mobile typecheck && pnpm --filter @bookstall/mobile test
+      - uses: expo/expo-github-action@v8
+        with: { eas-version: latest, token: '${{ secrets.EXPO_TOKEN }}' }
+      - name: Build the release APK on EAS (free tier)
+        working-directory: apps/mobile
+        run: eas build --platform android --profile production --non-interactive --wait

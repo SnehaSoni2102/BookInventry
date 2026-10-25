@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "scan": "Scan station",
+    "addBooks": "Add books",
+    "inventory": "Inventory",
+    "myStall": "My stall",
+    "stalls": "Stalls",
+    "sales": "Sales",
+    "mySales": "My sales",
+    "labels": "Labels",
+    "import": "Bulk import",
+    "shelves": "Shelves",
+    "genres": "Genres",
+    "users": "Users",
+    "settings": "Settings",
+    "audit": "Audit log"
+  },
+  "action": {
+    "sell": "Sell",
+    "checkout": "Check out to stall",
+    "checkin": "Check in",
+    "edit": "Edit",
+    "printLabel": "Print label",
+    "writeOff": "Write off",
+    "addToCart": "Add to cart",
+    "cancel": "Cancel",
+    "save": "Save",
+    "confirm": "Confirm",
+    "back": "Back"
+  },
+  "condition": {
+    "NEW": "New",
+    "LIKE_NEW": "Like new",
+    "VERY_GOOD": "Very good",
+    "GOOD": "Good",
+    "FAIR": "Fair",
+    "POOR": "Poor"
+  },
+  "conditionHelp": {
+    "NEW": "Unread, as in a shop",
+    "LIKE_NEW": "Read once, no marks",
+    "VERY_GOOD": "Light wear, clean pages",
+    "GOOD": "Some wear, readable and complete",
+    "FAIR": "Worn, may have notes or stains",
+    "POOR": "Heavily worn; sells only cheaply"
+  },
+  "status": {
+    "IN_STOCK": "In stock",
+    "AT_STALL": "At stall",
+    "SOLD": "Sold",
+    "WRITTEN_OFF": "Written off"
+  },
+  "payment": { "CASH": "Cash", "UPI": "UPI", "CARD": "Card", "OTHER": "Other" }
+}

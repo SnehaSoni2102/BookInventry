@@ -1,0 +1,15 @@
+{
+  "cli": { "version": ">= 16.0.0", "appVersionSource": "remote" },
+  "build": {
+    "development": { "developmentClient": true, "distribution": "internal", "android": { "buildType": "apk" } },
+    "preview": {
+      "distribution": "internal",
+      "android": { "buildType": "apk" },
+      "env": { "EXPO_PUBLIC_API_URL": "https://staging.books.example.org/api/v1", "EXPO_PUBLIC_APP_URL": "https://staging.books.example.org" }
+    },
+    "production": {
+      "android": { "buildType": "apk" },
+      "env": { "EXPO_PUBLIC_API_URL": "https://books.example.org/api/v1", "EXPO_PUBLIC_APP_URL": "https://books.example.org" }
+    }
+  }
+}

@@ -1,0 +1,2 @@
+# 02:00 IST nightly (container TZ=Asia/Kolkata)
+0 2 * * * /usr/local/bin/backup.sh nightly >> /proc/1/fd/1 2>&1

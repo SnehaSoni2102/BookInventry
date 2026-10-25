@@ -1,0 +1,54 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(self)"
+		Content-Security-Policy "default-src 'self'; img-src 'self' data: blob: https://covers.openlibrary.org https://books.google.com https://*.googleusercontent.com; connect-src 'self' wss://{$DOMAIN}; style-src 'self' 'unsafe-inline'; worker-src 'self'; frame-ancestors 'none'"
+	}
+
+	handle /api/* {
+		reverse_proxy api:3000
+	}
+	handle /rt/* {
+		reverse_proxy api:3000
+	}
+	handle /.well-known/* {
+		root * /srv/well-known
+		uri strip_prefix /.well-known
+		file_server
+	}
+	handle /app/* {
+		root * /srv
+		header Content-Type application/vnd.android.package-archive
+		file_server
+	}
+	handle {
+		root * /srv
+		@assets path /assets/*
+		header @assets Cache-Control "public, max-age=31536000, immutable"
+		header /index.html Cache-Control "no-cache"
+		header /sw.js Cache-Control "no-cache"
+		try_files {path} /index.html
+		file_server
+	}
+}
+
+# Staging shares this Caddy (see docs/RUNBOOK.md §Staging). Remove the block if you do not run staging.
+staging.{$DOMAIN} {
+	encode zstd gzip
+	handle /api/* {
+		reverse_proxy staging-api:3000
+	}
+	handle /rt/* {
+		reverse_proxy staging-api:3000
+	}
+	handle {
+		reverse_proxy staging-caddy:80
+	}
+}

@@ -1,0 +1,24 @@
+{
+  "name": "bookstall",
+  "private": true,
+  "packageManager": "pnpm@12.14.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "db:migrate": "pnpm --filter @bookstall/api db:migrate",
+    "db:seed": "pnpm --filter @bookstall/api db:seed",
+    "db:seed:demo": "pnpm --filter @bookstall/api db:seed:demo",
+    "db:generate": "pnpm --filter @bookstall/api db:generate"
+  },
+  "devDependencies": {
+    "prettier": "latest",
+    "turbo": "latest",
+    "typescript": "latest"
+  }
+}

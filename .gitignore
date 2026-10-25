@@ -1,0 +1,10 @@
+node_modules
+dist
+.turbo
+.data
+.tools
+.env
+.env.*
+!.env.example
+secrets/
+*.log
